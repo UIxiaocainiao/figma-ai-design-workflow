@@ -1,6 +1,6 @@
-# figmaAutoDesign
+# figma-ai-design-workflow
 
-`figmaAutoDesign` 是一个围绕 Figma 自动化设计、AI 工具协作和前端实现流程整理的项目仓库。当前仓库除了基础的 TypeScript 项目骨架外，也同步维护完整的安装与配置步骤文档，方便从零开始搭建环境。
+`figma-ai-design-workflow` 是一个围绕 Figma 自动化设计、AI 工具协作和前端实现流程整理的项目仓库。当前仓库除了基础的 TypeScript 项目骨架外，也同步维护完整的安装与配置步骤文档，方便从零开始搭建环境。
 
 ## 安装与配置总览
 

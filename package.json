@@ -1,8 +1,8 @@
 {
-  "name": "figma-auto-design",
+  "name": "figma-ai-design-workflow",
   "version": "0.1.0",
   "private": true,
-  "description": "Starter project for Figma automation workflows.",
+  "description": "Workflow starter for Figma automation, AI tooling, and frontend collaboration.",
   "type": "module",
   "scripts": {
     "dev": "tsx src/index.ts",

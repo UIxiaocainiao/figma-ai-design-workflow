@@ -1,4 +1,4 @@
-const projectName = "figmaAutoDesign";
+const projectName = "figma-ai-design-workflow";
 
 function bootstrap(): void {
   const hasFigmaToken = Boolean(process.env.FIGMA_ACCESS_TOKEN);
