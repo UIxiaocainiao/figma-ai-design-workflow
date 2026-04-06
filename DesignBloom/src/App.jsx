@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -17,14 +17,7 @@ const STATS = [
   { value: "1440", label: "desktop-first art direction with mobile-ready logic" },
 ];
 
-const CAPABILITIES = [
-  "Strategy",
-  "Identity",
-  "Product",
-  "Motion",
-  "Launch",
-  "Systems",
-];
+const CAPABILITIES = ["Strategy", "Identity", "Product", "Motion", "Launch", "Systems"];
 
 const SERVICES = [
   {
@@ -36,7 +29,7 @@ const SERVICES = [
   {
     title: "Experience Design",
     description:
-      "Homepage structure, section flow, CTA choreography, and content hierarchy shaped for dark editorial layouts.",
+      "Homepage structure, section flow, CTA choreography, and content hierarchy shaped for dark-theme editorial layouts.",
     glyph: "line",
   },
   {
@@ -50,7 +43,6 @@ const SERVICES = [
 const BULLETS = [
   "Larger hero typography with a portfolio-like signature",
   "A cleaner card rhythm drawn from the reference template",
-  "Token-driven dark palette built from the provided green and grey shades",
 ];
 
 const INSIGHTS = [
@@ -58,25 +50,25 @@ const INSIGHTS = [
     code: "A1",
     title: "Dark palette discipline",
     description:
-      "Uses the exact grey and lime family from the reference palette instead of arbitrary neon tones.",
+      "Uses the reference node's exact grey and lime family instead of arbitrary neon tones.",
   },
   {
     code: "A2",
     title: "Portfolio energy",
     description:
-      "Keeps the original website's mono labels and oversized type so the page still feels authored.",
+      "Keeps the website's bold title contrast and mono labels so the page still feels personal.",
   },
   {
     code: "A3",
     title: "Agency readability",
     description:
-      "Sections are easier to scan, with predictable card rhythm and cleaner action zones.",
+      "Sections are easier to scan, with more predictable card patterns and clearer action zones.",
   },
   {
     code: "A4",
     title: "Motion-ready surfaces",
     description:
-      "Containers and paddings are ready for richer GSAP scenes without breaking the layout.",
+      "Containers and paddings are designed so future GSAP animation layers can be added cleanly.",
   },
 ];
 
@@ -87,21 +79,21 @@ const CASES = [
     description:
       "A signature homepage direction with an aggressive headline stack, modular services, and a clear dark-agency conversion structure.",
     tags: ["Dark UI", "Agency", "Motion"],
-    variant: "primary",
+    variant: "studio",
   },
   {
     code: "CASE / 02",
     title: "Launch Campaign System",
     description:
-      "A campaign-led route that keeps the palette and frame logic, but increases product storytelling and spotlight moments.",
+      "A campaign-led variation that keeps the palette and frame logic, but increases product storytelling and spotlight moments.",
     tags: ["Launch", "System", "Story"],
-    variant: "secondary",
+    variant: "launch",
   },
 ];
 
 function ActionButton({ children, href, variant = "primary" }) {
   return (
-    <a className={`action-button magnetic ${variant}`} href={href}>
+    <a className={`action-button ${variant}`} href={href}>
       <span>{children}</span>
       <span className="button-arrow" aria-hidden="true">
         ↗
@@ -110,9 +102,9 @@ function ActionButton({ children, href, variant = "primary" }) {
   );
 }
 
-function SectionHeading({ eyebrow, title, description }) {
+function SectionIntro({ eyebrow, title, description, narrow = false }) {
   return (
-    <div className="section-heading reveal">
+    <div className={`section-intro ${narrow ? "narrow" : ""} reveal`}>
       <p className="section-eyebrow">{eyebrow}</p>
       <h2 className="section-title">{title}</h2>
       {description ? <p className="section-description">{description}</p> : null}
@@ -120,23 +112,26 @@ function SectionHeading({ eyebrow, title, description }) {
   );
 }
 
+function ServiceGlyph({ type }) {
+  return (
+    <div className={`service-icon ${type}`} aria-hidden="true">
+      <span />
+      {type === "bars" ? <span /> : null}
+    </div>
+  );
+}
+
 function ServiceCard({ title, description, glyph }) {
   return (
-    <article className="service-card reveal tilt-panel">
-      <div className={`service-icon ${glyph}`} aria-hidden="true">
-        <span />
-        {glyph === "bars" ? (
-          <>
-            <span />
-            <span />
-          </>
-        ) : null}
-      </div>
+    <article className="service-card reveal">
+      <ServiceGlyph type={glyph} />
       <h3>{title}</h3>
       <p>{description}</p>
-      <div className="card-foot">
+      <div className="service-footer">
         <span>View capability</span>
-        <span className="card-arrow">↗</span>
+        <span className="service-arrow" aria-hidden="true">
+          ↗
+        </span>
       </div>
     </article>
   );
@@ -145,7 +140,7 @@ function ServiceCard({ title, description, glyph }) {
 function InsightCard({ code, title, description }) {
   return (
     <article className="insight-card reveal">
-      <span className="insight-code">{code}</span>
+      <p className="insight-code">{code}</p>
       <h3>{title}</h3>
       <p>{description}</p>
     </article>
@@ -154,35 +149,39 @@ function InsightCard({ code, title, description }) {
 
 function CaseCard({ code, title, description, tags, variant }) {
   return (
-    <article className="case-card reveal tilt-panel">
-      <span className="case-code">{code}</span>
+    <article className="case-card reveal">
+      <p className="case-code">{code}</p>
       <h3>{title}</h3>
       <p>{description}</p>
-      <div className="tag-row">
+      <div className="tag-row" aria-label={`${title} tags`}>
         {tags.map((tag) => (
-          <span key={tag} className="mono-pill">
+          <span className="tag-pill" key={tag}>
             {tag}
           </span>
         ))}
       </div>
       <div className={`case-visual ${variant}`} aria-hidden="true">
-        <span className="visual-line" />
-        <span className="visual-block a" />
-        <span className="visual-block b" />
-        <span className="visual-block c" />
-        <span className="visual-block d" />
+        <span className="case-line" />
+        <span className="case-block a" />
+        <span className="case-block b" />
+        <span className="case-block c" />
+        <span className="case-block d" />
       </div>
     </article>
   );
 }
 
-function Field({ label, placeholder, large = false }) {
-  const Component = large ? "textarea" : "input";
+function Field({ label, placeholder, defaultValue, large = false }) {
+  const Control = large ? "textarea" : "input";
 
   return (
-    <label className={`contact-field reveal ${large ? "large" : ""}`}>
+    <label className={`field-card ${large ? "large" : ""}`}>
       <span className="field-label">{label}</span>
-      <Component placeholder={placeholder} rows={large ? 4 : undefined} />
+      <Control
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        rows={large ? 4 : undefined}
+      />
     </label>
   );
 }
@@ -190,191 +189,105 @@ function Field({ label, placeholder, large = false }) {
 function App() {
   const rootRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const reducedMotion = useMemo(() => {
-    if (typeof window === "undefined") return false;
-    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  }, []);
+
+  useEffect(() => {
+    document.body.classList.toggle("menu-open", menuOpen);
+    return () => document.body.classList.remove("menu-open");
+  }, [menuOpen]);
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return undefined;
 
-    const progressFill = root.querySelector(".progress-fill");
-    const updateProgress = () => {
-      if (!progressFill) return;
-      const range =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const progress = range > 0 ? (window.scrollY / range) * 100 : 0;
-      progressFill.style.width = `${progress}%`;
-    };
-
-    updateProgress();
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
-
-    return () => {
-      window.removeEventListener("scroll", updateProgress);
-      window.removeEventListener("resize", updateProgress);
-    };
-  }, []);
-
-  useEffect(() => {
-    const finePointer = window.matchMedia("(pointer: fine)").matches;
-    const cursor = rootRef.current?.querySelector("[data-cursor]");
-    const dot = rootRef.current?.querySelector("[data-cursor-dot]");
-    const ring = rootRef.current?.querySelector("[data-cursor-ring]");
-
-    if (!finePointer || reducedMotion || !cursor || !dot || !ring) {
-      document.body.classList.add("cursor-disabled");
+    if (!root) {
       return undefined;
     }
 
-    document.body.classList.remove("cursor-disabled");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let ringX = mouseX;
-    let ringY = mouseY;
-    let frameId = 0;
+    if (reduceMotion) {
+      return undefined;
+    }
 
-    const handleMove = (event) => {
-      mouseX = event.clientX;
-      mouseY = event.clientY;
-      gsap.to(dot, {
-        x: mouseX,
-        y: mouseY,
-        duration: 0.08,
-        ease: "none",
-      });
-    };
-
-    const handleDown = () => document.body.classList.add("cursor-clicking");
-    const handleUp = () => document.body.classList.remove("cursor-clicking");
-
-    const loop = () => {
-      ringX += (mouseX - ringX) * 0.14;
-      ringY += (mouseY - ringY) * 0.14;
-      gsap.set(ring, { x: ringX, y: ringY });
-      frameId = window.requestAnimationFrame(loop);
-    };
-
-    const hoverTargets = rootRef.current.querySelectorAll(
-      "a, button, input, textarea, .tilt-panel, .capability-pill, .stat-card, .hero-stage, .insight-card",
-    );
-    const addHover = () => document.body.classList.add("cursor-hovering");
-    const removeHover = () => document.body.classList.remove("cursor-hovering");
-
-    hoverTargets.forEach((element) => {
-      element.addEventListener("mouseenter", addHover);
-      element.addEventListener("mouseleave", removeHover);
-    });
-
-    window.addEventListener("mousemove", handleMove);
-    window.addEventListener("mousedown", handleDown);
-    window.addEventListener("mouseup", handleUp);
-    frameId = window.requestAnimationFrame(loop);
-
-    return () => {
-      hoverTargets.forEach((element) => {
-        element.removeEventListener("mouseenter", addHover);
-        element.removeEventListener("mouseleave", removeHover);
-      });
-      window.removeEventListener("mousemove", handleMove);
-      window.removeEventListener("mousedown", handleDown);
-      window.removeEventListener("mouseup", handleUp);
-      window.cancelAnimationFrame(frameId);
-      document.body.classList.remove(
-        "cursor-hovering",
-        "cursor-clicking",
-        "cursor-disabled",
-      );
-    };
-  }, [reducedMotion]);
-
-  useEffect(() => {
-    if (reducedMotion) return undefined;
-
-    const cleanup = [];
     const context = gsap.context(() => {
       gsap.from(".site-header", {
-        y: -20,
+        y: -16,
         opacity: 0,
-        duration: 0.8,
+        duration: 0.7,
         ease: "power3.out",
       });
 
       gsap.from(".hero-copy > *", {
-        y: 28,
+        y: 30,
         opacity: 0,
-        duration: 0.82,
+        duration: 0.8,
         stagger: 0.08,
-        ease: "power3.out",
         delay: 0.12,
+        ease: "power3.out",
       });
 
       gsap.from(".hero-stage", {
-        y: 36,
+        y: 32,
         opacity: 0,
-        scale: 0.98,
-        duration: 1,
+        duration: 0.95,
+        delay: 0.18,
         ease: "power3.out",
-        delay: 0.25,
       });
 
-      gsap.from(".stat-card", {
-        y: 18,
-        opacity: 0,
-        duration: 0.65,
-        stagger: 0.08,
-        ease: "power3.out",
-        delay: 0.5,
-      });
-
-      gsap.to(".orbit.orbit-outer", {
+      gsap.to(".stage-orbit.outer", {
         rotate: 360,
         duration: 18,
         repeat: -1,
         ease: "none",
         transformOrigin: "50% 50%",
       });
-      gsap.to(".orbit.orbit-mid", {
+
+      gsap.to(".stage-orbit.middle", {
         rotate: -360,
         duration: 14,
         repeat: -1,
         ease: "none",
         transformOrigin: "50% 50%",
       });
-      gsap.to(".hero-core", {
-        scale: 1.16,
-        duration: 1.8,
+
+      gsap.to(".stage-orbit.inner", {
+        rotate: 360,
+        duration: 10,
         repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
+        ease: "none",
+        transformOrigin: "50% 50%",
       });
-      gsap.to(".signal-bars span:nth-child(3)", {
-        height: 110,
+
+      gsap.to(".stage-core", {
+        scale: 1.18,
         duration: 1.8,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
       });
 
-      gsap.utils.toArray(".reveal").forEach((element, index) => {
+      gsap.to(".hero-stage .signal-bars .active", {
+        height: 108,
+        duration: 1.7,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+
+      gsap.utils.toArray(".reveal").forEach((element) => {
         gsap.from(element, {
-          y: 34,
+          y: 28,
           opacity: 0,
-          duration: 0.85,
+          duration: 0.8,
           ease: "power3.out",
-          delay: index % 3 === 0 ? 0 : 0.04 * (index % 3),
           scrollTrigger: {
             trigger: element,
-            start: "top 86%",
+            start: "top 85%",
           },
         });
       });
 
       gsap.to(".hero-copy", {
-        y: -48,
+        y: -36,
         ease: "none",
         scrollTrigger: {
           trigger: ".hero",
@@ -385,7 +298,7 @@ function App() {
       });
 
       gsap.to(".hero-stage", {
-        y: -36,
+        y: -18,
         ease: "none",
         scrollTrigger: {
           trigger: ".hero",
@@ -395,109 +308,28 @@ function App() {
         },
       });
 
-      const magneticButtons = gsap.utils.toArray(".magnetic");
-      magneticButtons.forEach((button) => {
-        const handleMove = (event) => {
-          const rect = button.getBoundingClientRect();
-          const dx = (event.clientX - (rect.left + rect.width / 2)) * 0.16;
-          const dy = (event.clientY - (rect.top + rect.height / 2)) * 0.16;
-          gsap.to(button, {
-            x: dx,
-            y: dy,
-            duration: 0.3,
-            ease: "power3.out",
-          });
-        };
-
-        const handleLeave = () => {
-          gsap.to(button, {
-            x: 0,
-            y: 0,
-            duration: 0.65,
-            ease: "elastic.out(1, 0.5)",
-          });
-        };
-
-        button.addEventListener("mousemove", handleMove);
-        button.addEventListener("mouseleave", handleLeave);
-        cleanup.push(() => {
-          button.removeEventListener("mousemove", handleMove);
-          button.removeEventListener("mouseleave", handleLeave);
-        });
-      });
-
-      gsap.utils.toArray(".tilt-panel").forEach((panel) => {
-        const handleMove = (event) => {
-          const rect = panel.getBoundingClientRect();
-          const x = (event.clientX - rect.left) / rect.width - 0.5;
-          const y = (event.clientY - rect.top) / rect.height - 0.5;
-
-          gsap.to(panel, {
-            rotateY: x * 6,
-            rotateX: -y * 5,
-            transformPerspective: 1200,
-            transformOrigin: "center",
-            duration: 0.45,
-            ease: "power3.out",
-          });
-        };
-
-        const handleLeave = () => {
-          gsap.to(panel, {
-            rotateX: 0,
-            rotateY: 0,
-            duration: 0.6,
-            ease: "power3.out",
-          });
-        };
-
-        panel.addEventListener("mousemove", handleMove);
-        panel.addEventListener("mouseleave", handleLeave);
-        cleanup.push(() => {
-          panel.removeEventListener("mousemove", handleMove);
-          panel.removeEventListener("mouseleave", handleLeave);
-        });
-      });
-
       ScrollTrigger.refresh();
-    }, rootRef);
+    }, root);
 
-    return () => {
-      cleanup.forEach((dispose) => dispose());
-      context.revert();
-    };
-  }, [reducedMotion]);
-
-  useEffect(() => {
-    document.body.classList.toggle("menu-open", menuOpen);
-    return () => document.body.classList.remove("menu-open");
-  }, [menuOpen]);
+    return () => context.revert();
+  }, []);
 
   return (
-    <div className="app" ref={rootRef}>
-      <div className="page-noise" aria-hidden="true" />
-      <div className="progress-bar" aria-hidden="true">
-        <span className="progress-fill" />
-      </div>
-      <div className="cursor-shell" data-cursor aria-hidden="true">
-        <span className="cursor-ring" data-cursor-ring />
-        <span className="cursor-dot" data-cursor-dot />
-      </div>
-
-      <header className="site-header">
-        <a className="brand" href="#top">
-          <span className="brand-mark" />
+    <div className="app-shell" ref={rootRef}>
+      <header className="site-header section-shell">
+        <a className="brand" href="#top" onClick={() => setMenuOpen(false)}>
+          <span className="brand-mark" aria-hidden="true" />
           <span>DesignBloom</span>
         </a>
 
-        <nav className={`site-nav ${menuOpen ? "open" : ""}`} aria-label="Primary">
-          {NAV_LINKS.map((link) => (
+        <nav className={`site-nav ${menuOpen ? "open" : ""}`} aria-label="Primary navigation">
+          {NAV_LINKS.map((item) => (
             <a
-              key={link.href}
-              href={link.href}
+              href={item.href}
+              key={item.href}
               onClick={() => setMenuOpen(false)}
             >
-              {link.label}
+              {item.label}
             </a>
           ))}
         </nav>
@@ -518,89 +350,87 @@ function App() {
       </header>
 
       <main>
-        <section className="hero section" id="top">
-          <div className="hero-copy">
-            <p className="badge">MOTION-FIRST DIGITAL AGENCY / DARK THEME SYSTEM</p>
-            <p className="hero-kicker">01 / DESIGNBLOOM STUDIO</p>
-
-            <div className="hero-title" aria-label="Build Digital Bloom">
-              <span>BUILD</span>
-              <span>DIGITAL</span>
-              <span className="accent">BLOOM.</span>
-            </div>
-
-            <p className="hero-description">
-              A UI direction that fuses the website&apos;s large typographic energy
-              with the reference template&apos;s systemized dark layout. Sharp grids,
-              acid green accents, and conversion-ready structure all live in one
-              homepage.
-            </p>
-
-            <div className="hero-actions">
-              <ActionButton href="#services">See Services</ActionButton>
-              <ActionButton href="#work" variant="secondary">
-                View Work
-              </ActionButton>
-            </div>
-
-            <div className="stat-row">
-              {STATS.map((item) => (
-                <article className="stat-card" key={item.value}>
-                  <strong>{item.value}</strong>
-                  <p>{item.label}</p>
-                </article>
-              ))}
-            </div>
+        <section className="hero section-shell" id="top">
+          <div className="hero-badge reveal">
+            <span className="hero-badge-dot" aria-hidden="true" />
+            <span>MOTION-FIRST DIGITAL AGENCY / DARK THEME SYSTEM</span>
           </div>
 
-          <div className="hero-stage tilt-panel">
-            <div className="orbit orbit-outer" aria-hidden="true" />
-            <div className="orbit orbit-mid" aria-hidden="true" />
-            <div className="orbit orbit-inner" aria-hidden="true" />
-            <div className="hero-core" aria-hidden="true" />
-
-            <article className="signal-card floating-card">
-              <span>LIVE SIGNAL</span>
-              <strong>98%</strong>
-              <p>system clarity</p>
-            </article>
-
-            <article className="stage-notes floating-card">
-              <span>CREATIVE STACK</span>
-              <h3>Type / Motion / Dark Grid</h3>
-              <p>
-                Built from the website&apos;s experimental portfolio feel, then
-                disciplined by the reference template&apos;s structured agency rhythm.
+          <div className="hero-layout">
+            <div className="hero-copy">
+              <p className="hero-kicker">01 / DESIGNBLOOM STUDIO</p>
+              <h1 className="hero-title">
+                <span>Design</span>
+                <span className="accent">BLOOM.</span>
+              </h1>
+              <p className="hero-description">
+                A UI direction that fuses the website&apos;s large typographic energy with
+                the reference template&apos;s systemized dark layout.
               </p>
-              <div className="tag-row">
-                <span className="mono-pill">GSAP</span>
-                <span className="mono-pill">DARK UI</span>
-                <span className="mono-pill">SYSTEMS</span>
-              </div>
-            </article>
 
-            <div className="signal-bars" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-              <span />
+              <div className="hero-actions">
+                <ActionButton href="#services">See Services</ActionButton>
+                <ActionButton href="#work" variant="secondary">
+                  View Work
+                </ActionButton>
+              </div>
+
+              <div className="stat-grid">
+                {STATS.map((item) => (
+                  <article className="stat-card" key={item.label}>
+                    <strong>{item.value}</strong>
+                    <p>{item.label}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <div className="hero-stage reveal" aria-hidden="true">
+              <div className="stage-glow" />
+              <div className="stage-orbit outer" />
+              <div className="stage-orbit middle" />
+              <div className="stage-orbit inner" />
+              <div className="stage-core" />
+
+              <div className="stage-panel signal-card">
+                <p className="panel-label">LIVE SIGNAL</p>
+                <strong>98%</strong>
+                <p>system clarity</p>
+              </div>
+
+              <div className="stage-panel stage-notes">
+                <p className="panel-label">CREATIVE STACK</p>
+                <h3>Type / Motion / Dark Grid</h3>
+                <p>Built from the website&apos;s experimental portfolio feel.</p>
+                <div className="tag-row">
+                  <span className="tag-pill">GSAP</span>
+                  <span className="tag-pill">DARK UI</span>
+                  <span className="tag-pill">SYSTEMS</span>
+                </div>
+              </div>
+
+              <div className="signal-bars">
+                <span />
+                <span />
+                <span className="active" />
+                <span />
+              </div>
             </div>
           </div>
         </section>
 
-        <section className="capability-strip section" aria-label="Capabilities">
-          {CAPABILITIES.map((item) => (
-            <div
-              key={item}
-              className={`capability-pill ${item === "Motion" ? "active" : ""}`}
-            >
-              {item}
-            </div>
-          ))}
+        <section className="signal-strip section-shell reveal" aria-label="Capabilities">
+          <div className="capability-strip">
+            {CAPABILITIES.map((item) => (
+              <div className={`capability-pill ${item === "Product" ? "active" : ""}`} key={item}>
+                {item}
+              </div>
+            ))}
+          </div>
         </section>
 
-        <section className="section" id="services">
-          <SectionHeading
+        <section className="content-section section-shell" id="services">
+          <SectionIntro
             eyebrow="SERVICES / 02"
             title="Agency structure with a sharper experimental edge."
             description="The reference template contributes the disciplined section rhythm and service architecture. The website contributes attitude: oversized typography, mono utility labels, acid-lime highlights, and a stronger sense of motion-led identity."
@@ -613,41 +443,42 @@ function App() {
           </div>
         </section>
 
-        <section className="section approach-layout" id="approach">
-          <div className="approach-copy reveal">
-            <p className="section-eyebrow">APPROACH / 03</p>
-            <h2 className="section-title compact">
-              <span>Keep the attitude.</span>
-              <span>Add the system.</span>
-            </h2>
-            <p className="section-description">
-              Compared with the original website, this redesign increases
-              structural clarity, section hierarchy, and service-market fit.
-              Compared with the reference template, it feels less generic and
-              more authored.
-            </p>
+        <section className="content-section section-shell approach-section" id="approach">
+          <div className="approach-grid">
+            <div className="approach-copy reveal">
+              <p className="section-eyebrow">WHY THIS DIRECTION / 03</p>
+              <h2 className="approach-title">
+                <span>Keep the attitude.</span>
+                <span>Add the system.</span>
+              </h2>
+              <p className="section-description">
+                Compared with the original website, this redesign increases
+                structural clarity, section hierarchy, and service-market fit.
+                Compared with the reference template, it feels less generic and more
+                authored.
+              </p>
+              <ul className="bullet-list">
+                {BULLETS.map((item) => (
+                  <li className="bullet-item" key={item}>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-            <ul className="bullet-list">
-              {BULLETS.map((bullet) => (
-                <li key={bullet}>
-                  <span className="bullet-dot" />
-                  <span>{bullet}</span>
-                </li>
+            <div className="insight-grid">
+              {INSIGHTS.map((insight) => (
+                <InsightCard key={insight.code} {...insight} />
               ))}
-            </ul>
-          </div>
-
-          <div className="insight-grid">
-            {INSIGHTS.map((insight) => (
-              <InsightCard key={insight.code} {...insight} />
-            ))}
+            </div>
           </div>
         </section>
 
-        <section className="section" id="work">
-          <SectionHeading
+        <section className="content-section section-shell" id="work">
+          <SectionIntro
             eyebrow="SELECTED SIGNALS / 04"
             title="Two visual routes for a dark digital brand."
+            narrow
           />
 
           <div className="case-grid">
@@ -657,35 +488,35 @@ function App() {
           </div>
         </section>
 
-        <section className="section contact-section" id="contact">
-          <div className="contact-surface">
-            <div className="contact-copy reveal">
+        <section className="contact-section section-shell" id="contact">
+          <div className="contact-surface reveal">
+            <div className="contact-copy">
               <p className="section-eyebrow">CONTACT / 05</p>
-              <h2 className="section-title compact">
+              <h2 className="contact-title">
                 <span>Need a darker,</span>
                 <span>sharper homepage?</span>
               </h2>
               <p className="section-description">
-                This concept is now ready to evolve into a full landing page or
-                a reusable component system inside the DesignBloom project.
+                This concept is now stored in the target Figma file and ready to
+                evolve into a full landing page or component system.
               </p>
               <ActionButton href="mailto:hello@designbloom.studio">
                 Book a Design Sprint
               </ActionButton>
             </div>
 
-            <form className="contact-form" onSubmit={(event) => event.preventDefault()}>
+            <form className="contact-form">
               <div className="field-row">
                 <Field label="Your Name" placeholder="Enter your name" />
                 <Field label="Email" placeholder="Enter your email" />
               </div>
               <Field
                 label="Project Scope"
-                placeholder="Brand identity, homepage UI, motion direction"
+                defaultValue="Brand identity, homepage UI, motion direction"
               />
               <Field
                 label="Message"
-                placeholder="Tell us what kind of digital presence you want to build, and what should make it memorable."
+                placeholder="Tell us what kind of digital presence you want to build"
                 large
               />
             </form>
@@ -693,9 +524,9 @@ function App() {
         </section>
       </main>
 
-      <footer className="site-footer">
-        <span>DesignBloom / Dark Agency Concept</span>
-        <span>Built from website style + dark agency reference palette</span>
+      <footer className="site-footer section-shell">
+        <p>DesignBloom / Dark Agency Concept</p>
+        <p>Built from website style + dark agency reference palette</p>
       </footer>
     </div>
   );
