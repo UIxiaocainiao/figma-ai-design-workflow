@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { HERO_PLAYER_TRACKS } from "../../content/home-content";
+import { createApiUrl } from "../../utils/api";
 import { extractEmbeddedFlacCoverUrl } from "../../utils/flacCover";
 
 function PrevIcon() {
@@ -93,6 +94,25 @@ function normalizeTrack(track, index) {
   };
 }
 
+function getPlaybackErrorMessage(track, audioElement) {
+  const filename = decodeURIComponent(getTrackFilename(track.src));
+  const mediaErrorCode = audioElement?.error?.code;
+
+  if (mediaErrorCode === 2) {
+    return `Unable to load ${filename}. Check that the file is reachable from the deployed site.`;
+  }
+
+  if (mediaErrorCode === 3) {
+    return `The browser loaded ${filename} but could not decode it. Try mp3 or m4a instead.`;
+  }
+
+  if (mediaErrorCode === 4 && /\.flac$/i.test(track.src)) {
+    return `${filename} is a FLAC file. If this browser cannot play FLAC, convert it to mp3 or m4a.`;
+  }
+
+  return `Unable to play ${filename}. Check that the file exists and the browser supports this format.`;
+}
+
 const FALLBACK_TRACKS = HERO_PLAYER_TRACKS.map(normalizeTrack).filter((track) => track.src);
 
 function HeroMusicPlayer() {
@@ -119,7 +139,7 @@ function HeroMusicPlayer() {
 
     void (async () => {
       try {
-        const response = await fetch("/api/music", {
+        const response = await fetch(createApiUrl("/api/music"), {
           signal: controller.signal,
         });
 
@@ -248,9 +268,7 @@ function HeroMusicPlayer() {
       playPromise.catch(() => {
         pendingPlayRef.current = false;
         setIsPlaying(false);
-        setErrorMessage(
-          `Missing ${getTrackFilename(currentTrack.src)}. Put your audio file in /audio.`,
-        );
+        setErrorMessage(getPlaybackErrorMessage(currentTrack, audioElement));
       });
     }
   };
@@ -361,9 +379,7 @@ function HeroMusicPlayer() {
           }}
           onError={() => {
             setIsPlaying(false);
-            setErrorMessage(
-              `Missing ${decodeURIComponent(getTrackFilename(currentTrack.src))}. Put your audio file in /audio.`,
-            );
+            setErrorMessage(getPlaybackErrorMessage(currentTrack, audioRef.current));
           }}
           onLoadedMetadata={(event) => {
             const nextDuration = event.currentTarget.duration;

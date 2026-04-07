@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { createApiUrl } from "../../utils/api";
 
 const loginInitialState = {
   account: "",
@@ -15,7 +16,7 @@ const registerInitialState = {
 };
 
 async function postJson(url, payload) {
-  const response = await fetch(url, {
+  const response = await fetch(createApiUrl(url), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
