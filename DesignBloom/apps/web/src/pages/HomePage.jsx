@@ -3,6 +3,7 @@ import ActionButton from "../components/common/ActionButton";
 import NavPill from "../components/common/NavPill";
 import SectionLead from "../components/common/SectionLead";
 import SignalPill from "../components/common/SignalPill";
+import AuthSection from "../components/home/AuthSection";
 import CaseCard from "../components/home/CaseCard";
 import Field from "../components/home/Field";
 import InsightCard from "../components/home/InsightCard";
@@ -23,8 +24,13 @@ import { useHomepageMotion } from "../hooks/useHomepageMotion";
 function HomePage() {
   const rootRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("login");
 
   const closeMenu = () => setMenuOpen(false);
+  const openAuth = (nextMode) => {
+    setAuthMode(nextMode);
+    closeMenu();
+  };
 
   useEffect(() => {
     document.body.classList.toggle("menu-open", menuOpen);
@@ -89,9 +95,30 @@ function HomePage() {
               onClick={closeMenu}
             />
           ))}
+
+          <div className="site-nav-auth">
+            <a className="nav-pill" href="#auth" onClick={() => openAuth("login")}>
+              Log in
+            </a>
+            <a className="nav-pill" href="#auth" onClick={() => openAuth("register")}>
+              Register
+            </a>
+          </div>
         </nav>
 
         <div className="header-actions">
+          <div className="header-auth" aria-label="Account actions">
+            <a className="header-auth-link" href="#auth" onClick={() => openAuth("login")}>
+              Log in
+            </a>
+            <a
+              className="header-auth-link is-strong"
+              href="#auth"
+              onClick={() => openAuth("register")}
+            >
+              Register
+            </a>
+          </div>
           <ActionButton className="header-cta" href="#contact">
             Start a Project
           </ActionButton>
@@ -332,10 +359,14 @@ function HomePage() {
           </div>
         </section>
 
+        <section className="auth-section section-shell" id="auth">
+          <AuthSection mode={authMode} onModeChange={setAuthMode} />
+        </section>
+
         <section className="contact-section section-shell" id="contact">
           <div className="contact-surface reveal">
             <div className="contact-copy">
-              <p className="section-eyebrow">CONTACT / 05</p>
+              <p className="section-eyebrow">CONTACT / 06</p>
               <h2 className="contact-title">Need a darker, sharper homepage?</h2>
               <p className="section-body contact-body">
                 This refreshed concept is now sitting in a new Figma file, ready to

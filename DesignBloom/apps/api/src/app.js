@@ -1,6 +1,7 @@
 import { resolveRoute } from "./routes/index.js";
 import { sendJson } from "./utils/response.js";
 import { env } from "./config/env.js";
+import { HttpError } from "./utils/httpError.js";
 
 export function createApp() {
   return async function app(req, res) {
@@ -14,8 +15,10 @@ export function createApp() {
       return;
     }
 
+    const requestMethod = req.method ?? "GET";
+    const routeMethod = requestMethod === "HEAD" ? "GET" : requestMethod;
     const url = new URL(req.url ?? "/", `http://${req.headers.host ?? "localhost"}`);
-    const handler = resolveRoute(req.method ?? "GET", url.pathname);
+    const handler = resolveRoute(routeMethod, url.pathname);
 
     if (!handler) {
       sendJson(res, 404, {
@@ -28,6 +31,15 @@ export function createApp() {
     try {
       await handler({ req, res, url });
     } catch (error) {
+      if (error instanceof HttpError) {
+        sendJson(res, error.statusCode, {
+          status: "error",
+          message: error.message,
+          errors: error.details.length > 0 ? error.details : undefined,
+        });
+        return;
+      }
+
       sendJson(res, 500, {
         status: "error",
         message: error instanceof Error ? error.message : "Unknown server error",
@@ -35,4 +47,3 @@ export function createApp() {
     }
   };
 }
-

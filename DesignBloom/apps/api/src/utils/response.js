@@ -3,6 +3,11 @@ export function sendJson(res, statusCode, payload, headers = {}) {
     "Content-Type": "application/json; charset=utf-8",
     ...headers,
   });
+
+  if (res.req?.method === "HEAD") {
+    res.end();
+    return;
+  }
+
   res.end(JSON.stringify(payload));
 }
-
