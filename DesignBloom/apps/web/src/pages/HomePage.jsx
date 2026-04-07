@@ -1,228 +1,26 @@
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import ActionButton from "../components/common/ActionButton";
+import NavPill from "../components/common/NavPill";
+import SectionLead from "../components/common/SectionLead";
+import SignalPill from "../components/common/SignalPill";
+import CaseCard from "../components/home/CaseCard";
+import Field from "../components/home/Field";
+import InsightCard from "../components/home/InsightCard";
+import ServiceCard from "../components/home/ServiceCard";
+import {
+  APPROACH_POINTS,
+  CAPABILITIES,
+  CASES,
+  HERO_METRICS,
+  HERO_PILLS,
+  HERO_POINTS,
+  INSIGHTS,
+  NAV_LINKS,
+  SERVICES,
+} from "../content/home-content";
+import { useHomepageMotion } from "../hooks/useHomepageMotion";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const NAV_LINKS = [
-  { label: "Studio", href: "#top", active: true },
-  { label: "Services", href: "#services" },
-  { label: "Approach", href: "#approach" },
-  { label: "Work", href: "#work" },
-  { label: "Contact", href: "#contact" },
-];
-
-const HERO_PILLS = [
-  { label: "UI SYSTEM" },
-  { label: "MOTION" },
-  { label: "CONVERSION", accent: true },
-];
-
-const HERO_METRICS = [
-  { label: "03 CORE LAYERS", body: "Type, system, motion." },
-  { label: "1440PX CANVAS", body: "Desktop-first, mobile-aware pacing." },
-];
-
-const HERO_POINTS = [
-  "Green is reserved for action and state.",
-  "The stage reads like a product, not a poster.",
-  "Metrics now have visible hierarchy.",
-];
-
-const CAPABILITIES = [
-  { label: "Strategy" },
-  { label: "Identity" },
-  { label: "Product", active: true },
-  { label: "Motion" },
-  { label: "Launch" },
-  { label: "Systems" },
-];
-
-const SERVICES = [
-  {
-    title: "Brand Systems",
-    description:
-      "Identity direction, visual language, and reusable modules that make every launch surface feel authored, not assembled.",
-    glyph: "square",
-  },
-  {
-    title: "Experience Design",
-    description:
-      "Homepage structure, CTA choreography, and interface pacing tuned for dark-mode clarity and faster scanning.",
-    glyph: "line",
-  },
-  {
-    title: "Motion Direction",
-    description:
-      "Animation-ready layout logic and visual tension designed to support reveal sequences without breaking the system.",
-    glyph: "bars",
-  },
-];
-
-const APPROACH_POINTS = [
-  "Larger hero typography anchored by quieter supporting surfaces.",
-  "Card modules feel more like an interface system than decorative panels.",
-  "Buttons and tags now use a consistent pill vocabulary across the page.",
-];
-
-const INSIGHTS = [
-  {
-    code: "A1",
-    title: "Dark palette discipline",
-    description:
-      "The interface relies on near-black layers and only a single functional accent, which immediately increases perceived quality.",
-    tall: true,
-  },
-  {
-    code: "A2",
-    title: "Portfolio energy",
-    description:
-      "The page still feels like DesignBloom because the typography stays assertive and the copy remains opinionated.",
-  },
-  {
-    code: "A3",
-    title: "Agency readability",
-    description:
-      "Every section now has a cleaner scan path, stronger CTA grouping, and more predictable module behavior.",
-  },
-  {
-    code: "A4",
-    title: "Motion-ready surfaces",
-    description:
-      "Spacing and corner systems are consistent enough that future animation layers can be added without friction.",
-  },
-];
-
-const CASES = [
-  {
-    code: "CASE / 01",
-    title: "DesignBloom Studio Site",
-    description:
-      "A sharper homepage system with tighter navigation behavior, denser rhythm, and a more tactile CTA language.",
-    tags: ["DARK UI", "AGENCY", "MOTION"],
-    variant: "studio",
-  },
-  {
-    code: "CASE / 02",
-    title: "Launch Campaign System",
-    description:
-      "A campaign-led variation of the same language that increases product spotlight moments without losing the core interface discipline.",
-    tags: ["LAUNCH", "SYSTEM", "STORY"],
-    variant: "launch",
-    highlight: true,
-  },
-];
-
-function ActionButton({ children, href, variant = "primary", className = "" }) {
-  const classes = ["action-button", variant, className].filter(Boolean).join(" ");
-
-  return (
-    <a className={classes} href={href}>
-      <span>{children}</span>
-      <span className="button-arrow" aria-hidden="true">
-        ↗
-      </span>
-    </a>
-  );
-}
-
-function NavPill({ label, href, active = false, onClick }) {
-  return (
-    <a className={`nav-pill ${active ? "is-active" : ""}`} href={href} onClick={onClick}>
-      {label}
-    </a>
-  );
-}
-
-function SignalPill({ label, accent = false }) {
-  return <span className={`ui-pill ${accent ? "is-accent" : ""}`}>{label}</span>;
-}
-
-function SectionLead({ eyebrow, title, description, className = "" }) {
-  return (
-    <div className={`section-lead ${className}`.trim()}>
-      <p className="section-eyebrow">{eyebrow}</p>
-      <h2 className="section-title">{title}</h2>
-      {description ? <p className="section-body">{description}</p> : null}
-    </div>
-  );
-}
-
-function ServiceGlyph({ type }) {
-  return (
-    <span className={`service-glyph ${type}`} aria-hidden="true">
-      <span />
-      {type === "bars" ? <span /> : null}
-    </span>
-  );
-}
-
-function ServiceCard({ title, description, glyph }) {
-  return (
-    <article className="service-card reveal">
-      <ServiceGlyph type={glyph} />
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <div className="service-footer">
-        <span>View capability</span>
-        <span className="footer-arrow" aria-hidden="true">
-          ↗
-        </span>
-      </div>
-    </article>
-  );
-}
-
-function InsightCard({ code, title, description, tall = false }) {
-  return (
-    <article className={`insight-card reveal ${tall ? "is-tall" : ""}`.trim()}>
-      <p className="insight-code">{code}</p>
-      <h3>{title}</h3>
-      <p>{description}</p>
-    </article>
-  );
-}
-
-function CaseCard({ code, title, description, tags, variant, highlight = false }) {
-  return (
-    <article className={`case-card reveal ${highlight ? "is-highlight" : ""}`.trim()}>
-      <p className="case-code">{code}</p>
-      <h3>{title}</h3>
-      <p>{description}</p>
-      <div className="tag-row" aria-label={`${title} tags`}>
-        {tags.map((tag) => (
-          <span className="tag-pill" key={tag}>
-            {tag}
-          </span>
-        ))}
-      </div>
-      <div className={`case-visual ${variant}`} aria-hidden="true">
-        <span className="case-line" />
-        <span className="case-block a" />
-        <span className="case-block b" />
-        <span className="case-block c" />
-        <span className="case-block d" />
-      </div>
-    </article>
-  );
-}
-
-function Field({ label, placeholder, defaultValue, large = false }) {
-  const Control = large ? "textarea" : "input";
-
-  return (
-    <label className={`field-card ${large ? "is-large" : ""}`.trim()}>
-      <span className="field-label">{label}</span>
-      <Control
-        defaultValue={defaultValue}
-        placeholder={placeholder}
-        rows={large ? 2 : undefined}
-      />
-    </label>
-  );
-}
-
-function App() {
+function HomePage() {
   const rootRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -271,129 +69,7 @@ function App() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [menuOpen]);
 
-  useEffect(() => {
-    const root = rootRef.current;
-    const responsiveMotion = gsap.matchMedia();
-
-    if (!root) {
-      return undefined;
-    }
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return undefined;
-    }
-
-    const context = gsap.context(() => {
-      gsap.from(".site-header", {
-        y: -16,
-        opacity: 0,
-        duration: 0.7,
-        ease: "power3.out",
-      });
-
-      gsap.from(".hero-copy > *", {
-        y: 26,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.08,
-        delay: 0.1,
-        ease: "power3.out",
-      });
-
-      gsap.from(".hero-stage", {
-        y: 28,
-        opacity: 0,
-        duration: 0.92,
-        delay: 0.18,
-        ease: "power3.out",
-      });
-
-      gsap.to(".stage-orbit.outer", {
-        rotate: 360,
-        duration: 18,
-        repeat: -1,
-        ease: "none",
-        transformOrigin: "50% 50%",
-      });
-
-      gsap.to(".stage-orbit.middle", {
-        rotate: -360,
-        duration: 15,
-        repeat: -1,
-        ease: "none",
-        transformOrigin: "50% 50%",
-      });
-
-      gsap.to(".stage-orbit.inner", {
-        rotate: 360,
-        duration: 11,
-        repeat: -1,
-        ease: "none",
-        transformOrigin: "50% 50%",
-      });
-
-      gsap.to(".stage-core-disc", {
-        scale: 1.08,
-        duration: 1.9,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-
-      gsap.to(".wave-bar.is-accent, .stage-eq-bar.is-accent", {
-        scaleY: 1.18,
-        duration: 1.6,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        transformOrigin: "50% 100%",
-      });
-
-      gsap.utils.toArray(".reveal").forEach((element) => {
-        gsap.from(element, {
-          y: 24,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: element,
-            start: "top 86%",
-          },
-        });
-      });
-
-      responsiveMotion.add("(min-width: 980px)", () => {
-        gsap.to(".hero-copy", {
-          y: -26,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.15,
-          },
-        });
-
-        gsap.to(".hero-stage", {
-          y: -14,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.2,
-          },
-        });
-      });
-
-      ScrollTrigger.refresh();
-    }, root);
-
-    return () => {
-      responsiveMotion.revert();
-      context.revert();
-    };
-  }, []);
+  useHomepageMotion(rootRef);
 
   return (
     <div className="app-shell" ref={rootRef}>
@@ -665,7 +341,9 @@ function App() {
                 This refreshed concept is now sitting in a new Figma file, ready to
                 evolve into a full landing page system or a component library.
               </p>
-              <ActionButton href="mailto:hello@designbloom.studio">Book a Design Sprint</ActionButton>
+              <ActionButton href="mailto:hello@designbloom.studio">
+                Book a Design Sprint
+              </ActionButton>
             </div>
 
             <form className="contact-form">
@@ -698,4 +376,4 @@ function App() {
   );
 }
 
-export default App;
+export default HomePage;

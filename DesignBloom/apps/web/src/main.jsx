@@ -8,7 +8,7 @@ import "@fontsource/archivo/latin-700.css";
 import "@fontsource/archivo/latin-900.css";
 import "@fontsource/archivo/latin-900-italic.css";
 import App from "./App";
-import "./styles.css";
+import "./styles/global.css";
 
 ReactDOM.createRoot(document.getElementById("app")).render(
   <React.StrictMode>
