@@ -107,7 +107,7 @@ function SectionIntro({ eyebrow, title, description, narrow = false }) {
     <div className={`section-intro ${narrow ? "narrow" : ""} reveal`}>
       <p className="section-eyebrow">{eyebrow}</p>
       <h2 className="section-title">{title}</h2>
-      {description ? <p className="section-description">{description}</p> : null}
+      {description ? <p className="section-description clamp-three-lines">{description}</p> : null}
     </div>
   );
 }
@@ -126,7 +126,7 @@ function ServiceCard({ title, description, glyph }) {
     <article className="service-card reveal">
       <ServiceGlyph type={glyph} />
       <h3>{title}</h3>
-      <p>{description}</p>
+      <p className="clamp-three-lines">{description}</p>
       <div className="service-footer">
         <span>View capability</span>
         <span className="service-arrow" aria-hidden="true">
@@ -142,7 +142,7 @@ function InsightCard({ code, title, description }) {
     <article className="insight-card reveal">
       <p className="insight-code">{code}</p>
       <h3>{title}</h3>
-      <p>{description}</p>
+      <p className="clamp-three-lines">{description}</p>
     </article>
   );
 }
@@ -152,7 +152,7 @@ function CaseCard({ code, title, description, tags, variant }) {
     <article className="case-card reveal">
       <p className="case-code">{code}</p>
       <h3>{title}</h3>
-      <p>{description}</p>
+      <p className="clamp-three-lines">{description}</p>
       <div className="tag-row" aria-label={`${title} tags`}>
         {tags.map((tag) => (
           <span className="tag-pill" key={tag}>
@@ -189,6 +189,7 @@ function Field({ label, placeholder, defaultValue, large = false }) {
 function App() {
   const rootRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
     document.body.classList.toggle("menu-open", menuOpen);
@@ -196,7 +197,46 @@ function App() {
   }, [menuOpen]);
 
   useEffect(() => {
+    const desktopMedia = window.matchMedia("(min-width: 981px)");
+    const handleDesktopEnter = (event) => {
+      if (event.matches) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (desktopMedia.addEventListener) {
+      desktopMedia.addEventListener("change", handleDesktopEnter);
+    } else {
+      desktopMedia.addListener(handleDesktopEnter);
+    }
+
+    return () => {
+      if (desktopMedia.removeEventListener) {
+        desktopMedia.removeEventListener("change", handleDesktopEnter);
+      } else {
+        desktopMedia.removeListener(handleDesktopEnter);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      return undefined;
+    }
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [menuOpen]);
+
+  useEffect(() => {
     const root = rootRef.current;
+    const responsiveMotion = gsap.matchMedia();
 
     if (!root) {
       return undefined;
@@ -286,38 +326,43 @@ function App() {
         });
       });
 
-      gsap.to(".hero-copy", {
-        y: -36,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".hero",
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.2,
-        },
-      });
+      responsiveMotion.add("(min-width: 769px)", () => {
+        gsap.to(".hero-copy", {
+          y: -36,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.2,
+          },
+        });
 
-      gsap.to(".hero-stage", {
-        y: -18,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".hero",
-          start: "top top",
-          end: "bottom top",
-          scrub: 1.35,
-        },
+        gsap.to(".hero-stage", {
+          y: -18,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.35,
+          },
+        });
       });
 
       ScrollTrigger.refresh();
     }, root);
 
-    return () => context.revert();
+    return () => {
+      responsiveMotion.revert();
+      context.revert();
+    };
   }, []);
 
   return (
     <div className="app-shell" ref={rootRef}>
       <header className="site-header section-shell">
-        <a className="brand" href="#top" onClick={() => setMenuOpen(false)}>
+        <a className="brand" href="#top" onClick={closeMenu}>
           <span className="brand-mark" aria-hidden="true" />
           <span>DesignBloom</span>
         </a>
@@ -327,7 +372,7 @@ function App() {
             <a
               href={item.href}
               key={item.href}
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
             >
               {item.label}
             </a>
@@ -363,7 +408,7 @@ function App() {
                 <span>Design</span>
                 <span className="accent">BLOOM.</span>
               </h1>
-              <p className="hero-description">
+              <p className="hero-description clamp-three-lines">
                 A UI direction that fuses the website&apos;s large typographic energy with
                 the reference template&apos;s systemized dark layout.
               </p>
@@ -379,7 +424,7 @@ function App() {
                 {STATS.map((item) => (
                   <article className="stat-card" key={item.label}>
                     <strong>{item.value}</strong>
-                    <p>{item.label}</p>
+                    <p className="clamp-three-lines">{item.label}</p>
                   </article>
                 ))}
               </div>
@@ -395,13 +440,15 @@ function App() {
               <div className="stage-panel signal-card">
                 <p className="panel-label">LIVE SIGNAL</p>
                 <strong>98%</strong>
-                <p>system clarity</p>
+                <p className="clamp-three-lines">system clarity</p>
               </div>
 
               <div className="stage-panel stage-notes">
                 <p className="panel-label">CREATIVE STACK</p>
                 <h3>Type / Motion / Dark Grid</h3>
-                <p>Built from the website&apos;s experimental portfolio feel.</p>
+                <p className="clamp-three-lines">
+                  Built from the website&apos;s experimental portfolio feel.
+                </p>
                 <div className="tag-row">
                   <span className="tag-pill">GSAP</span>
                   <span className="tag-pill">DARK UI</span>
@@ -451,7 +498,7 @@ function App() {
                 <span>Keep the attitude.</span>
                 <span>Add the system.</span>
               </h2>
-              <p className="section-description">
+              <p className="section-description clamp-three-lines">
                 Compared with the original website, this redesign increases
                 structural clarity, section hierarchy, and service-market fit.
                 Compared with the reference template, it feels less generic and more
@@ -496,7 +543,7 @@ function App() {
                 <span>Need a darker,</span>
                 <span>sharper homepage?</span>
               </h2>
-              <p className="section-description">
+              <p className="section-description clamp-three-lines">
                 This concept is now stored in the target Figma file and ready to
                 evolve into a full landing page or component system.
               </p>
@@ -525,8 +572,10 @@ function App() {
       </main>
 
       <footer className="site-footer section-shell">
-        <p>DesignBloom / Dark Agency Concept</p>
-        <p>Built from website style + dark agency reference palette</p>
+        <p className="clamp-three-lines">DesignBloom / Dark Agency Concept</p>
+        <p className="clamp-three-lines">
+          Built from website style + dark agency reference palette
+        </p>
       </footer>
     </div>
   );
