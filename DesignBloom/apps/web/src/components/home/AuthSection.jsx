@@ -55,7 +55,7 @@ function AuthFeedback({ feedback }) {
   return <p className={`auth-feedback is-${feedback.tone}`}>{feedback.text}</p>;
 }
 
-function AuthSection({ mode, onModeChange }) {
+function AuthSection({ mode, onModeChange, standalone = false }) {
   const [loginForm, setLoginForm] = useState(loginInitialState);
   const [registerForm, setRegisterForm] = useState(registerInitialState);
   const [loginPending, setLoginPending] = useState(false);
@@ -164,33 +164,39 @@ function AuthSection({ mode, onModeChange }) {
   };
 
   return (
-    <div className="auth-surface reveal">
-      <div className="auth-copy">
-        <p className="section-eyebrow">AUTH / 05</p>
-        <h2 className="auth-title">Account access built into the landing page.</h2>
-        <p className="section-body auth-body">
-          The new auth endpoints are wired into a single surface: request a code,
-          create an account, then sign in with your email or username.
-        </p>
+    <div className={`auth-surface${standalone ? " is-standalone" : " reveal"}`.trim()}>
+      {standalone ? null : (
+        <div className="auth-copy">
+          <p className="section-eyebrow">AUTH / 05</p>
+          <h2 className="auth-title">Account access built into the landing page.</h2>
+          <p className="section-body auth-body">
+            The new auth endpoints are wired into a single surface: request a code,
+            create an account, then sign in with your email or username.
+          </p>
 
-        <div className="auth-points">
-          <div className="bullet-row">
-            <span className="bullet-dot" aria-hidden="true" />
-            <span>Email verification is required before registration completes.</span>
-          </div>
-          <div className="bullet-row">
-            <span className="bullet-dot" aria-hidden="true" />
-            <span>Login accepts either username or email plus password.</span>
-          </div>
-          <div className="bullet-row">
-            <span className="bullet-dot" aria-hidden="true" />
-            <span>Until a mail provider is added, the dev code is surfaced here.</span>
+          <div className="auth-points">
+            <div className="bullet-row">
+              <span className="bullet-dot" aria-hidden="true" />
+              <span>Email verification is required before registration completes.</span>
+            </div>
+            <div className="bullet-row">
+              <span className="bullet-dot" aria-hidden="true" />
+              <span>Login accepts either username or email plus password.</span>
+            </div>
+            <div className="bullet-row">
+              <span className="bullet-dot" aria-hidden="true" />
+              <span>Until a mail provider is added, the dev code is surfaced here.</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      <div className="auth-panel">
-        <div className="auth-tabs" role="tablist" aria-label="Authentication">
+      <div className={`auth-panel${standalone ? " is-standalone" : ""}`.trim()}>
+        <div
+          className={`auth-tabs${standalone ? " is-standalone" : ""}`.trim()}
+          role="tablist"
+          aria-label="Authentication"
+        >
           <button
             aria-selected={mode === "login"}
             className={`auth-tab ${mode === "login" ? "is-active" : ""}`.trim()}

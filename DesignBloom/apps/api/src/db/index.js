@@ -7,15 +7,8 @@ import {
   queryMysql,
   runMysql,
 } from "./mysql.js";
-import {
-  closeSqliteDatabase,
-  initializeSqliteDatabase,
-  querySqlite,
-  runSqlite,
-} from "./sqlite.js";
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
-const sqliteSchemaFile = path.join(currentDir, "schema.sql");
 const mysqlSchemaFile = path.join(currentDir, "mysql-schema.sql");
 const configuredDatabaseUrl =
   process.env.DATABASE_URL?.trim() ||
@@ -25,8 +18,18 @@ const configuredDatabaseUrl =
 
 let initialized = false;
 
+function getRequiredDatabaseUrl() {
+  if (!configuredDatabaseUrl) {
+    throw new Error(
+      "DATABASE_URL is required. SQLite fallback has been removed and the API now requires MySQL.",
+    );
+  }
+
+  return configuredDatabaseUrl;
+}
+
 export function getDatabaseProvider() {
-  return configuredDatabaseUrl ? "mysql" : "sqlite";
+  return "mysql";
 }
 
 export async function initializeDatabase() {
@@ -34,38 +37,20 @@ export async function initializeDatabase() {
     return;
   }
 
-  if (getDatabaseProvider() === "mysql") {
-    const schema = await readFile(mysqlSchemaFile, "utf8");
-    await initializeMysqlDatabase(configuredDatabaseUrl, schema);
-  } else {
-    const schema = await readFile(sqliteSchemaFile, "utf8");
-    await initializeSqliteDatabase(schema);
-  }
+  const schema = await readFile(mysqlSchemaFile, "utf8");
+  await initializeMysqlDatabase(getRequiredDatabaseUrl(), schema);
 
   initialized = true;
 }
 
 export async function runSql(sql, params = []) {
-  if (getDatabaseProvider() === "mysql") {
-    return runMysql(sql, params);
-  }
-
-  return runSqlite(sql, params);
+  return runMysql(sql, params);
 }
 
 export async function querySql(sql, params = []) {
-  if (getDatabaseProvider() === "mysql") {
-    return queryMysql(sql, params);
-  }
-
-  return querySqlite(sql, params);
+  return queryMysql(sql, params);
 }
 
 export async function closeDatabase() {
-  if (getDatabaseProvider() === "mysql") {
-    await closeMysqlDatabase();
-    return;
-  }
-
-  await closeSqliteDatabase();
+  await closeMysqlDatabase();
 }

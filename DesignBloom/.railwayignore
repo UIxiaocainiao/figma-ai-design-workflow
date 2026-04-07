@@ -1,0 +1,5 @@
+apps/api/data
+dist
+node_modules
+apps/web/public/audio/*
+!apps/web/public/audio/README.md

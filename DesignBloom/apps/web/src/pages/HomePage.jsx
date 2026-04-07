@@ -3,9 +3,9 @@ import ActionButton from "../components/common/ActionButton";
 import NavPill from "../components/common/NavPill";
 import SectionLead from "../components/common/SectionLead";
 import SignalPill from "../components/common/SignalPill";
-import AuthSection from "../components/home/AuthSection";
 import CaseCard from "../components/home/CaseCard";
 import Field from "../components/home/Field";
+import HeroMusicPlayer from "../components/home/HeroMusicPlayer";
 import InsightCard from "../components/home/InsightCard";
 import ServiceCard from "../components/home/ServiceCard";
 import {
@@ -20,17 +20,15 @@ import {
   SERVICES,
 } from "../content/home-content";
 import { useHomepageMotion } from "../hooks/useHomepageMotion";
+import { getAuthHref } from "../utils/authView";
 
 function HomePage() {
   const rootRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [authMode, setAuthMode] = useState("login");
+  const loginHref = getAuthHref("login");
+  const registerHref = getAuthHref("register");
 
   const closeMenu = () => setMenuOpen(false);
-  const openAuth = (nextMode) => {
-    setAuthMode(nextMode);
-    closeMenu();
-  };
 
   useEffect(() => {
     document.body.classList.toggle("menu-open", menuOpen);
@@ -97,10 +95,10 @@ function HomePage() {
           ))}
 
           <div className="site-nav-auth">
-            <a className="nav-pill" href="#auth" onClick={() => openAuth("login")}>
+            <a className="nav-pill" href={loginHref} onClick={closeMenu}>
               Log in
             </a>
-            <a className="nav-pill" href="#auth" onClick={() => openAuth("register")}>
+            <a className="nav-pill" href={registerHref} onClick={closeMenu}>
               Register
             </a>
           </div>
@@ -108,20 +106,13 @@ function HomePage() {
 
         <div className="header-actions">
           <div className="header-auth" aria-label="Account actions">
-            <a className="header-auth-link" href="#auth" onClick={() => openAuth("login")}>
+            <a className="header-auth-link" href={loginHref}>
               Log in
             </a>
-            <a
-              className="header-auth-link is-strong"
-              href="#auth"
-              onClick={() => openAuth("register")}
-            >
+            <a className="header-auth-link is-strong" href={registerHref}>
               Register
             </a>
           </div>
-          <ActionButton className="header-cta" href="#contact">
-            Start a Project
-          </ActionButton>
           <button
             aria-expanded={menuOpen}
             aria-label="Toggle navigation"
@@ -216,77 +207,38 @@ function HomePage() {
               </div>
             </div>
 
-            <div className="hero-stage reveal" aria-hidden="true">
-              <div className="stage-chip">
+            <div className="hero-stage reveal">
+              <div className="stage-chip" aria-hidden="true">
                 <span className="stage-chip-dot" />
                 <span>NOW PLAYING / HERO MIX</span>
               </div>
 
-              <div className="stage-label">
+              <div className="stage-label" aria-hidden="true">
                 <p>LIVE MIX</p>
                 <strong>98%</strong>
                 <span>hero clarity</span>
               </div>
 
-              <div className="stage-orbit outer" />
-              <div className="stage-orbit middle" />
-              <div className="stage-orbit inner" />
-              <div className="stage-glow" />
-              <div className="stage-core-disc">
+              <div className="stage-orbit outer" aria-hidden="true" />
+              <div className="stage-orbit middle" aria-hidden="true" />
+              <div className="stage-orbit inner" aria-hidden="true" />
+              <div className="stage-glow" aria-hidden="true" />
+              <div className="stage-core-disc" aria-hidden="true">
                 <span>♫</span>
               </div>
-              <span className="orbit-dot orbit-dot-accent" />
-              <span className="orbit-dot orbit-dot-ghost" />
+              <span className="orbit-dot orbit-dot-accent" aria-hidden="true" />
+              <span className="orbit-dot orbit-dot-ghost" aria-hidden="true" />
 
-              <div className="stage-sub-pill">QUEUE READY</div>
+              <div className="stage-sub-pill" aria-hidden="true">QUEUE READY</div>
 
-              <div className="stage-eq">
+              <div className="stage-eq" aria-hidden="true">
                 <span className="stage-eq-bar" />
                 <span className="stage-eq-bar" />
                 <span className="stage-eq-bar is-accent" />
                 <span className="stage-eq-bar" />
               </div>
 
-              <div className="player-card">
-                <div className="player-top">
-                  <div className="player-album">
-                    <span className="player-album-core" />
-                  </div>
-                  <div className="player-meta">
-                    <p className="player-track">Type / Motion</p>
-                    <p className="player-track">Product Signal</p>
-                    <p className="player-caption">Premium dark-agency homepage remix</p>
-                  </div>
-                </div>
-
-                <div className="player-progress">
-                  <div className="progress-rail">
-                    <div className="progress-fill" />
-                    <span className="progress-handle" />
-                  </div>
-                  <div className="player-time">
-                    <span>02:18</span>
-                    <span>03:42</span>
-                  </div>
-                </div>
-
-                <div className="player-controls">
-                  <span className="control-button prev">
-                    <span className="control-icon" />
-                  </span>
-                  <span className="control-button play">
-                    <span className="control-icon" />
-                  </span>
-                  <span className="control-button next">
-                    <span className="control-icon" />
-                  </span>
-                  <span className="intent-pill">HIGH INTENT</span>
-                  <span className="speaker-icon" />
-                  <span className="volume-rail">
-                    <span className="volume-fill" />
-                  </span>
-                </div>
-              </div>
+              <HeroMusicPlayer />
             </div>
           </div>
         </section>
@@ -359,14 +311,10 @@ function HomePage() {
           </div>
         </section>
 
-        <section className="auth-section section-shell" id="auth">
-          <AuthSection mode={authMode} onModeChange={setAuthMode} />
-        </section>
-
         <section className="contact-section section-shell" id="contact">
           <div className="contact-surface reveal">
             <div className="contact-copy">
-              <p className="section-eyebrow">CONTACT / 06</p>
+              <p className="section-eyebrow">CONTACT / 05</p>
               <h2 className="contact-title">Need a darker, sharper homepage?</h2>
               <p className="section-body contact-body">
                 This refreshed concept is now sitting in a new Figma file, ready to

@@ -2,12 +2,15 @@ import http from "node:http";
 import { createApp } from "./app.js";
 import { env } from "./config/env.js";
 import { closeDatabase, getDatabaseProvider, initializeDatabase } from "./db/index.js";
+import { syncMusicLibrary } from "./services/music.service.js";
 
 await initializeDatabase();
+const syncedTracks = await syncMusicLibrary();
 
 const server = http.createServer(createApp());
 
 server.listen(env.port, env.host, () => {
+  console.log(`Music library ready with ${syncedTracks.length} track(s) in ${getDatabaseProvider()}.`);
   console.log(
     `DesignBloom API listening on http://${env.host}:${env.port} using ${getDatabaseProvider()}`,
   );

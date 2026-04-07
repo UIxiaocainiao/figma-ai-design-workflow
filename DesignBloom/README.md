@@ -17,6 +17,8 @@ npm run dev:web
 npm run dev:api
 ```
 
+后端现在只支持 MySQL，启动 `apps/api` 前需要提供 `DATABASE_URL`。
+
 ## 构建
 
 ```bash

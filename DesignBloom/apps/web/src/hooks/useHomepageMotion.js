@@ -84,6 +84,10 @@ export function useHomepageMotion(rootRef) {
       });
 
       gsap.utils.toArray(".reveal").forEach((element) => {
+        if (element.closest(".hero")) {
+          return;
+        }
+
         gsap.from(element, {
           y: 24,
           opacity: 0,
@@ -129,4 +133,3 @@ export function useHomepageMotion(rootRef) {
     };
   }, [rootRef]);
 }
-

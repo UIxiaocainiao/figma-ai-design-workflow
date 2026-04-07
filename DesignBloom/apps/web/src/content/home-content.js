@@ -17,6 +17,27 @@ export const HERO_METRICS = [
   { label: "1440PX CANVAS", body: "Desktop-first, mobile-aware pacing." },
 ];
 
+export const HERO_PLAYER_TRACKS = [
+  {
+    title: "After Hours System",
+    artist: "DesignBloom Session",
+    caption: "A dark-launch opener for the hero stage.",
+    src: "/audio/after-hours-system.mp3",
+  },
+  {
+    title: "Clarity In Motion",
+    artist: "DesignBloom Session",
+    caption: "Sharper transitions, cleaner rhythm, tighter pacing.",
+    src: "/audio/clarity-in-motion.mp3",
+  },
+  {
+    title: "Midnight Interface",
+    artist: "DesignBloom Session",
+    caption: "A slower loop for the last pass on atmosphere.",
+    src: "/audio/midnight-interface.mp3",
+  },
+];
+
 export const HERO_POINTS = [
   "Green is reserved for action and state.",
   "The stage reads like a product, not a poster.",
@@ -106,4 +127,3 @@ export const CASES = [
     highlight: true,
   },
 ];
-

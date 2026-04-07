@@ -26,3 +26,16 @@ CREATE TABLE IF NOT EXISTS verification_codes (
   consumed_at VARCHAR(40),
   INDEX idx_verification_codes_email_status (email, status)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS music (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  filename VARCHAR(255) NOT NULL,
+  src VARCHAR(512) NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at VARCHAR(40) NOT NULL,
+  updated_at VARCHAR(40) NOT NULL,
+  UNIQUE KEY uq_music_filename (filename),
+  UNIQUE KEY uq_music_src (src),
+  INDEX idx_music_sort_order (sort_order, id)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
