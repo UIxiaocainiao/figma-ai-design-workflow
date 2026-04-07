@@ -5,44 +5,64 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const NAV_LINKS = [
+  { label: "Studio", href: "#top", active: true },
   { label: "Services", href: "#services" },
   { label: "Approach", href: "#approach" },
   { label: "Work", href: "#work" },
   { label: "Contact", href: "#contact" },
 ];
 
-const STATS = [
-  { value: "12+", label: "launches shaped with motion-first storytelling" },
-  { value: "03", label: "signature layers: type / system / animation" },
-  { value: "1440", label: "desktop-first art direction with mobile-ready logic" },
+const HERO_PILLS = [
+  { label: "UI SYSTEM" },
+  { label: "MOTION" },
+  { label: "CONVERSION", accent: true },
 ];
 
-const CAPABILITIES = ["Strategy", "Identity", "Product", "Motion", "Launch", "Systems"];
+const HERO_METRICS = [
+  { label: "03 CORE LAYERS", body: "Type, system, motion." },
+  { label: "1440PX CANVAS", body: "Desktop-first, mobile-aware pacing." },
+];
+
+const HERO_POINTS = [
+  "Green is reserved for action and state.",
+  "The stage reads like a product, not a poster.",
+  "Metrics now have visible hierarchy.",
+];
+
+const CAPABILITIES = [
+  { label: "Strategy" },
+  { label: "Identity" },
+  { label: "Product", active: true },
+  { label: "Motion" },
+  { label: "Launch" },
+  { label: "Systems" },
+];
 
 const SERVICES = [
   {
     title: "Brand Systems",
     description:
-      "Identity direction, visual language, and scalable UI foundations that make the entire site feel authored, not assembled.",
+      "Identity direction, visual language, and reusable modules that make every launch surface feel authored, not assembled.",
     glyph: "square",
   },
   {
     title: "Experience Design",
     description:
-      "Homepage structure, section flow, CTA choreography, and content hierarchy shaped for dark-theme editorial layouts.",
+      "Homepage structure, CTA choreography, and interface pacing tuned for dark-mode clarity and faster scanning.",
     glyph: "line",
   },
   {
     title: "Motion Direction",
     description:
-      "Loader moments, hover states, reveal timing, and scroll scenes designed to support the message rather than distract from it.",
+      "Animation-ready layout logic and visual tension designed to support reveal sequences without breaking the system.",
     glyph: "bars",
   },
 ];
 
-const BULLETS = [
-  "Larger hero typography with a portfolio-like signature",
-  "A cleaner card rhythm drawn from the reference template",
+const APPROACH_POINTS = [
+  "Larger hero typography anchored by quieter supporting surfaces.",
+  "Card modules feel more like an interface system than decorative panels.",
+  "Buttons and tags now use a consistent pill vocabulary across the page.",
 ];
 
 const INSIGHTS = [
@@ -50,25 +70,26 @@ const INSIGHTS = [
     code: "A1",
     title: "Dark palette discipline",
     description:
-      "Uses the reference node's exact grey and lime family instead of arbitrary neon tones.",
+      "The interface relies on near-black layers and only a single functional accent, which immediately increases perceived quality.",
+    tall: true,
   },
   {
     code: "A2",
     title: "Portfolio energy",
     description:
-      "Keeps the website's bold title contrast and mono labels so the page still feels personal.",
+      "The page still feels like DesignBloom because the typography stays assertive and the copy remains opinionated.",
   },
   {
     code: "A3",
     title: "Agency readability",
     description:
-      "Sections are easier to scan, with more predictable card patterns and clearer action zones.",
+      "Every section now has a cleaner scan path, stronger CTA grouping, and more predictable module behavior.",
   },
   {
     code: "A4",
     title: "Motion-ready surfaces",
     description:
-      "Containers and paddings are designed so future GSAP animation layers can be added cleanly.",
+      "Spacing and corner systems are consistent enough that future animation layers can be added without friction.",
   },
 ];
 
@@ -77,23 +98,26 @@ const CASES = [
     code: "CASE / 01",
     title: "DesignBloom Studio Site",
     description:
-      "A signature homepage direction with an aggressive headline stack, modular services, and a clear dark-agency conversion structure.",
-    tags: ["Dark UI", "Agency", "Motion"],
+      "A sharper homepage system with tighter navigation behavior, denser rhythm, and a more tactile CTA language.",
+    tags: ["DARK UI", "AGENCY", "MOTION"],
     variant: "studio",
   },
   {
     code: "CASE / 02",
     title: "Launch Campaign System",
     description:
-      "A campaign-led variation that keeps the palette and frame logic, but increases product storytelling and spotlight moments.",
-    tags: ["Launch", "System", "Story"],
+      "A campaign-led variation of the same language that increases product spotlight moments without losing the core interface discipline.",
+    tags: ["LAUNCH", "SYSTEM", "STORY"],
     variant: "launch",
+    highlight: true,
   },
 ];
 
-function ActionButton({ children, href, variant = "primary" }) {
+function ActionButton({ children, href, variant = "primary", className = "" }) {
+  const classes = ["action-button", variant, className].filter(Boolean).join(" ");
+
   return (
-    <a className={`action-button ${variant}`} href={href}>
+    <a className={classes} href={href}>
       <span>{children}</span>
       <span className="button-arrow" aria-hidden="true">
         ↗
@@ -102,22 +126,34 @@ function ActionButton({ children, href, variant = "primary" }) {
   );
 }
 
-function SectionIntro({ eyebrow, title, description, narrow = false }) {
+function NavPill({ label, href, active = false, onClick }) {
   return (
-    <div className={`section-intro ${narrow ? "narrow" : ""} reveal`}>
+    <a className={`nav-pill ${active ? "is-active" : ""}`} href={href} onClick={onClick}>
+      {label}
+    </a>
+  );
+}
+
+function SignalPill({ label, accent = false }) {
+  return <span className={`ui-pill ${accent ? "is-accent" : ""}`}>{label}</span>;
+}
+
+function SectionLead({ eyebrow, title, description, className = "" }) {
+  return (
+    <div className={`section-lead ${className}`.trim()}>
       <p className="section-eyebrow">{eyebrow}</p>
       <h2 className="section-title">{title}</h2>
-      {description ? <p className="section-description clamp-three-lines">{description}</p> : null}
+      {description ? <p className="section-body">{description}</p> : null}
     </div>
   );
 }
 
 function ServiceGlyph({ type }) {
   return (
-    <div className={`service-icon ${type}`} aria-hidden="true">
+    <span className={`service-glyph ${type}`} aria-hidden="true">
       <span />
       {type === "bars" ? <span /> : null}
-    </div>
+    </span>
   );
 }
 
@@ -126,10 +162,10 @@ function ServiceCard({ title, description, glyph }) {
     <article className="service-card reveal">
       <ServiceGlyph type={glyph} />
       <h3>{title}</h3>
-      <p className="clamp-three-lines">{description}</p>
+      <p>{description}</p>
       <div className="service-footer">
         <span>View capability</span>
-        <span className="service-arrow" aria-hidden="true">
+        <span className="footer-arrow" aria-hidden="true">
           ↗
         </span>
       </div>
@@ -137,22 +173,22 @@ function ServiceCard({ title, description, glyph }) {
   );
 }
 
-function InsightCard({ code, title, description }) {
+function InsightCard({ code, title, description, tall = false }) {
   return (
-    <article className="insight-card reveal">
+    <article className={`insight-card reveal ${tall ? "is-tall" : ""}`.trim()}>
       <p className="insight-code">{code}</p>
       <h3>{title}</h3>
-      <p className="clamp-three-lines">{description}</p>
+      <p>{description}</p>
     </article>
   );
 }
 
-function CaseCard({ code, title, description, tags, variant }) {
+function CaseCard({ code, title, description, tags, variant, highlight = false }) {
   return (
-    <article className="case-card reveal">
+    <article className={`case-card reveal ${highlight ? "is-highlight" : ""}`.trim()}>
       <p className="case-code">{code}</p>
       <h3>{title}</h3>
-      <p className="clamp-three-lines">{description}</p>
+      <p>{description}</p>
       <div className="tag-row" aria-label={`${title} tags`}>
         {tags.map((tag) => (
           <span className="tag-pill" key={tag}>
@@ -175,12 +211,12 @@ function Field({ label, placeholder, defaultValue, large = false }) {
   const Control = large ? "textarea" : "input";
 
   return (
-    <label className={`field-card ${large ? "large" : ""}`}>
+    <label className={`field-card ${large ? "is-large" : ""}`.trim()}>
       <span className="field-label">{label}</span>
       <Control
         defaultValue={defaultValue}
         placeholder={placeholder}
-        rows={large ? 4 : undefined}
+        rows={large ? 2 : undefined}
       />
     </label>
   );
@@ -189,6 +225,7 @@ function Field({ label, placeholder, defaultValue, large = false }) {
 function App() {
   const rootRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
+
   const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
@@ -242,9 +279,7 @@ function App() {
       return undefined;
     }
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    if (reduceMotion) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return undefined;
     }
 
@@ -257,18 +292,18 @@ function App() {
       });
 
       gsap.from(".hero-copy > *", {
-        y: 30,
+        y: 26,
         opacity: 0,
         duration: 0.8,
         stagger: 0.08,
-        delay: 0.12,
+        delay: 0.1,
         ease: "power3.out",
       });
 
       gsap.from(".hero-stage", {
-        y: 32,
+        y: 28,
         opacity: 0,
-        duration: 0.95,
+        duration: 0.92,
         delay: 0.18,
         ease: "power3.out",
       });
@@ -283,7 +318,7 @@ function App() {
 
       gsap.to(".stage-orbit.middle", {
         rotate: -360,
-        duration: 14,
+        duration: 15,
         repeat: -1,
         ease: "none",
         transformOrigin: "50% 50%",
@@ -291,61 +326,62 @@ function App() {
 
       gsap.to(".stage-orbit.inner", {
         rotate: 360,
-        duration: 10,
+        duration: 11,
         repeat: -1,
         ease: "none",
         transformOrigin: "50% 50%",
       });
 
-      gsap.to(".stage-core", {
-        scale: 1.18,
-        duration: 1.8,
+      gsap.to(".stage-core-disc", {
+        scale: 1.08,
+        duration: 1.9,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
       });
 
-      gsap.to(".hero-stage .signal-bars .active", {
-        height: 108,
-        duration: 1.7,
+      gsap.to(".wave-bar.is-accent, .stage-eq-bar.is-accent", {
+        scaleY: 1.18,
+        duration: 1.6,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
+        transformOrigin: "50% 100%",
       });
 
       gsap.utils.toArray(".reveal").forEach((element) => {
         gsap.from(element, {
-          y: 28,
+          y: 24,
           opacity: 0,
           duration: 0.8,
           ease: "power3.out",
           scrollTrigger: {
             trigger: element,
-            start: "top 85%",
+            start: "top 86%",
           },
         });
       });
 
-      responsiveMotion.add("(min-width: 769px)", () => {
+      responsiveMotion.add("(min-width: 980px)", () => {
         gsap.to(".hero-copy", {
-          y: -36,
+          y: -26,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.15,
+          },
+        });
+
+        gsap.to(".hero-stage", {
+          y: -14,
           ease: "none",
           scrollTrigger: {
             trigger: ".hero",
             start: "top top",
             end: "bottom top",
             scrub: 1.2,
-          },
-        });
-
-        gsap.to(".hero-stage", {
-          y: -18,
-          ease: "none",
-          scrollTrigger: {
-            trigger: ".hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.35,
           },
         });
       });
@@ -364,29 +400,31 @@ function App() {
       <header className="site-header section-shell">
         <a className="brand" href="#top" onClick={closeMenu}>
           <span className="brand-mark" aria-hidden="true" />
-          <span>DesignBloom</span>
+          <span className="brand-wordmark">DesignBloom</span>
         </a>
 
         <nav className={`site-nav ${menuOpen ? "open" : ""}`} aria-label="Primary navigation">
           {NAV_LINKS.map((item) => (
-            <a
+            <NavPill
+              active={item.active}
               href={item.href}
-              key={item.href}
+              key={item.label}
+              label={item.label}
               onClick={closeMenu}
-            >
-              {item.label}
-            </a>
+            />
           ))}
         </nav>
 
         <div className="header-actions">
-          <ActionButton href="#contact">Start a Project</ActionButton>
+          <ActionButton className="header-cta" href="#contact">
+            Start a Project
+          </ActionButton>
           <button
-            className={`menu-toggle ${menuOpen ? "open" : ""}`}
-            type="button"
-            onClick={() => setMenuOpen((open) => !open)}
-            aria-label="Toggle navigation"
             aria-expanded={menuOpen}
+            aria-label="Toggle navigation"
+            className={`menu-toggle ${menuOpen ? "open" : ""}`.trim()}
+            onClick={() => setMenuOpen((open) => !open)}
+            type="button"
           >
             <span />
             <span />
@@ -394,73 +432,157 @@ function App() {
         </div>
       </header>
 
-      <main>
+      <main className="site-main">
         <section className="hero section-shell" id="top">
           <div className="hero-badge reveal">
             <span className="hero-badge-dot" aria-hidden="true" />
-            <span>MOTION-FIRST DIGITAL AGENCY / DARK THEME SYSTEM</span>
+            <span>ROUND 02 / HERO MIX TUNED FOR PLAYER-LIKE CLARITY</span>
           </div>
 
           <div className="hero-layout">
             <div className="hero-copy">
-              <p className="hero-kicker">01 / DESIGNBLOOM STUDIO</p>
+              <p className="hero-kicker">01 / DESIGNBLOOM x SPOTIFY SYSTEM</p>
               <h1 className="hero-title">
-                <span>Design</span>
-                <span className="accent">BLOOM.</span>
+                <span>Design that</span>
+                <span>hits harder</span>
+                <span>in the dark.</span>
               </h1>
-              <p className="hero-description clamp-three-lines">
-                A UI direction that fuses the website&apos;s large typographic energy with
-                the reference template&apos;s systemized dark layout.
+              <p className="hero-description">
+                A tighter hero for a premium dark-agency launch: clearer promise,
+                cleaner proof, and a more product-like surface from the first screen.
               </p>
 
+              <div className="signal-row" aria-label="Hero signals">
+                {HERO_PILLS.map((pill) => (
+                  <SignalPill key={pill.label} {...pill} />
+                ))}
+              </div>
+
               <div className="hero-actions">
-                <ActionButton href="#services">See Services</ActionButton>
+                <ActionButton href="#services">Explore Services</ActionButton>
                 <ActionButton href="#work" variant="secondary">
-                  View Work
+                  See Case Studies
                 </ActionButton>
               </div>
 
-              <div className="stat-grid">
-                {STATS.map((item) => (
-                  <article className="stat-card" key={item.label}>
-                    <strong>{item.value}</strong>
-                    <p className="clamp-three-lines">{item.label}</p>
-                  </article>
-                ))}
+              <div className="signal-board">
+                <article className="primary-signal reveal">
+                  <p className="micro-label">LIVE SCORE</p>
+                  <div className="score-row">
+                    <strong>94%</strong>
+                    <div className="wave" aria-hidden="true">
+                      <span className="wave-bar" />
+                      <span className="wave-bar" />
+                      <span className="wave-bar is-accent" />
+                      <span className="wave-bar" />
+                    </div>
+                  </div>
+                  <p>
+                    Sharper CTA contrast, tighter proof, and a hero that reads like a
+                    high-intent product entry point.
+                  </p>
+                </article>
+
+                <div className="metric-stack reveal">
+                  {HERO_METRICS.map((item) => (
+                    <article className="metric-card" key={item.label}>
+                      <p className="micro-label">{item.label}</p>
+                      <p className="metric-body">{item.body}</p>
+                    </article>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rationale-surface reveal">
+                <div className="rationale-copy">
+                  <h2>Why this mix lands better</h2>
+                  <p>
+                    The left side now reads faster: promise first, proof second,
+                    action third. That gives the hero more intent without adding noise.
+                  </p>
+                </div>
+
+                <div className="rationale-points">
+                  {HERO_POINTS.map((point) => (
+                    <div className="rationale-point" key={point}>
+                      <span className="rationale-dot" aria-hidden="true" />
+                      <span>{point}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
             <div className="hero-stage reveal" aria-hidden="true">
-              <div className="stage-glow" />
+              <div className="stage-chip">
+                <span className="stage-chip-dot" />
+                <span>NOW PLAYING / HERO MIX</span>
+              </div>
+
+              <div className="stage-label">
+                <p>LIVE MIX</p>
+                <strong>98%</strong>
+                <span>hero clarity</span>
+              </div>
+
               <div className="stage-orbit outer" />
               <div className="stage-orbit middle" />
               <div className="stage-orbit inner" />
-              <div className="stage-core" />
+              <div className="stage-glow" />
+              <div className="stage-core-disc">
+                <span>♫</span>
+              </div>
+              <span className="orbit-dot orbit-dot-accent" />
+              <span className="orbit-dot orbit-dot-ghost" />
 
-              <div className="stage-panel signal-card">
-                <p className="panel-label">LIVE SIGNAL</p>
-                <strong>98%</strong>
-                <p className="clamp-three-lines">system clarity</p>
+              <div className="stage-sub-pill">QUEUE READY</div>
+
+              <div className="stage-eq">
+                <span className="stage-eq-bar" />
+                <span className="stage-eq-bar" />
+                <span className="stage-eq-bar is-accent" />
+                <span className="stage-eq-bar" />
               </div>
 
-              <div className="stage-panel stage-notes">
-                <p className="panel-label">CREATIVE STACK</p>
-                <h3>Type / Motion / Dark Grid</h3>
-                <p className="clamp-three-lines">
-                  Built from the website&apos;s experimental portfolio feel.
-                </p>
-                <div className="tag-row">
-                  <span className="tag-pill">GSAP</span>
-                  <span className="tag-pill">DARK UI</span>
-                  <span className="tag-pill">SYSTEMS</span>
+              <div className="player-card">
+                <div className="player-top">
+                  <div className="player-album">
+                    <span className="player-album-core" />
+                  </div>
+                  <div className="player-meta">
+                    <p className="player-track">Type / Motion</p>
+                    <p className="player-track">Product Signal</p>
+                    <p className="player-caption">Premium dark-agency homepage remix</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="signal-bars">
-                <span />
-                <span />
-                <span className="active" />
-                <span />
+                <div className="player-progress">
+                  <div className="progress-rail">
+                    <div className="progress-fill" />
+                    <span className="progress-handle" />
+                  </div>
+                  <div className="player-time">
+                    <span>02:18</span>
+                    <span>03:42</span>
+                  </div>
+                </div>
+
+                <div className="player-controls">
+                  <span className="control-button prev">
+                    <span className="control-icon" />
+                  </span>
+                  <span className="control-button play">
+                    <span className="control-icon" />
+                  </span>
+                  <span className="control-button next">
+                    <span className="control-icon" />
+                  </span>
+                  <span className="intent-pill">HIGH INTENT</span>
+                  <span className="speaker-icon" />
+                  <span className="volume-rail">
+                    <span className="volume-fill" />
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -469,18 +591,18 @@ function App() {
         <section className="signal-strip section-shell reveal" aria-label="Capabilities">
           <div className="capability-strip">
             {CAPABILITIES.map((item) => (
-              <div className={`capability-pill ${item === "Product" ? "active" : ""}`} key={item}>
-                {item}
+              <div className={`capability-pill ${item.active ? "is-active" : ""}`.trim()} key={item.label}>
+                {item.label}
               </div>
             ))}
           </div>
         </section>
 
         <section className="content-section section-shell" id="services">
-          <SectionIntro
+          <SectionLead
             eyebrow="SERVICES / 02"
-            title="Agency structure with a sharper experimental edge."
-            description="The reference template contributes the disciplined section rhythm and service architecture. The website contributes attitude: oversized typography, mono utility labels, acid-lime highlights, and a stronger sense of motion-led identity."
+            title="Agency structure with a denser, more premium dark system."
+            description="The information architecture stays familiar, but the visual rhythm now feels more deliberate: darker surfaces, stronger CTA states, and card modules that read faster."
           />
 
           <div className="service-grid">
@@ -490,27 +612,26 @@ function App() {
           </div>
         </section>
 
-        <section className="content-section section-shell approach-section" id="approach">
-          <div className="approach-grid">
-            <div className="approach-copy reveal">
+        <section className="approach-section section-shell" id="approach">
+          <div className="approach-surface reveal">
+            <div className="approach-copy">
               <p className="section-eyebrow">WHY THIS DIRECTION / 03</p>
-              <h2 className="approach-title">
-                <span>Keep the attitude.</span>
-                <span>Add the system.</span>
-              </h2>
-              <p className="section-description clamp-three-lines">
-                Compared with the original website, this redesign increases
-                structural clarity, section hierarchy, and service-market fit.
-                Compared with the reference template, it feels less generic and more
-                authored.
+              <h2 className="approach-title">Keep the attitude. Add the system.</h2>
+              <p className="section-body approach-body">
+                Compared with the original concept, this redesign increases
+                structural clarity and makes the homepage feel more product-grade.
+                Compared with a generic agency template, it keeps the personal
+                energy intact.
               </p>
-              <ul className="bullet-list">
-                {BULLETS.map((item) => (
-                  <li className="bullet-item" key={item}>
-                    {item}
-                  </li>
+
+              <div className="approach-points">
+                {APPROACH_POINTS.map((item) => (
+                  <div className="bullet-row" key={item}>
+                    <span className="bullet-dot" aria-hidden="true" />
+                    <span>{item}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
             <div className="insight-grid">
@@ -521,11 +642,11 @@ function App() {
           </div>
         </section>
 
-        <section className="content-section section-shell" id="work">
-          <SectionIntro
+        <section className="work-section section-shell" id="work">
+          <SectionLead
+            className="work-lead"
             eyebrow="SELECTED SIGNALS / 04"
-            title="Two visual routes for a dark digital brand."
-            narrow
+            title="Two routes for a darker digital brand."
           />
 
           <div className="case-grid">
@@ -539,32 +660,27 @@ function App() {
           <div className="contact-surface reveal">
             <div className="contact-copy">
               <p className="section-eyebrow">CONTACT / 05</p>
-              <h2 className="contact-title">
-                <span>Need a darker,</span>
-                <span>sharper homepage?</span>
-              </h2>
-              <p className="section-description clamp-three-lines">
-                This concept is now stored in the target Figma file and ready to
-                evolve into a full landing page or component system.
+              <h2 className="contact-title">Need a darker, sharper homepage?</h2>
+              <p className="section-body contact-body">
+                This refreshed concept is now sitting in a new Figma file, ready to
+                evolve into a full landing page system or a component library.
               </p>
-              <ActionButton href="mailto:hello@designbloom.studio">
-                Book a Design Sprint
-              </ActionButton>
+              <ActionButton href="mailto:hello@designbloom.studio">Book a Design Sprint</ActionButton>
             </div>
 
             <form className="contact-form">
               <div className="field-row">
-                <Field label="Your Name" placeholder="Enter your name" />
-                <Field label="Email" placeholder="Enter your email" />
+                <Field label="YOUR NAME" placeholder="Enter your name" />
+                <Field label="EMAIL" placeholder="Enter your email" />
               </div>
               <Field
-                label="Project Scope"
                 defaultValue="Brand identity, homepage UI, motion direction"
+                label="PROJECT SCOPE"
               />
               <Field
-                label="Message"
-                placeholder="Tell us what kind of digital presence you want to build"
                 large
+                label="MESSAGE"
+                placeholder="Tell us what kind of digital presence you want to build"
               />
             </form>
           </div>
@@ -572,10 +688,11 @@ function App() {
       </main>
 
       <footer className="site-footer section-shell">
-        <p className="clamp-three-lines">DesignBloom / Dark Agency Concept</p>
-        <p className="clamp-three-lines">
-          Built from website style + dark agency reference palette
-        </p>
+        <div className="footer-divider" />
+        <div className="footer-row">
+          <p>DesignBloom / Spotify Refresh Concept</p>
+          <p>Built from original structure + Spotify dark system principles</p>
+        </div>
       </footer>
     </div>
   );
