@@ -283,10 +283,19 @@ nano ~/.zshrc
 plugins=(
   git
   extract
-  fzf
   zsh-autosuggestions
+  fzf
   zsh-syntax-highlighting
 )
+```
+
+下面些复制到新修改的 `plugins=(...)` 下面：
+
+```bash
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"  
+ZSH_AUTOSUGGEST_STRATEGY="completion" 
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.fzf.zsh
 ```
 
 注意：
