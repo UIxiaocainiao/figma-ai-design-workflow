@@ -10,18 +10,29 @@ import {
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 const mysqlSchemaFile = path.join(currentDir, "mysql-schema.sql");
-const configuredDatabaseUrl =
-  process.env.DATABASE_URL?.trim() ||
-  process.env.MYSQL_URL?.trim() ||
-  process.env.MYSQL_PUBLIC_URL?.trim() ||
-  "";
+
+function getConfiguredDatabaseUrl() {
+  const databaseUrl = process.env.DATABASE_URL?.trim() || "";
+  const mysqlUrl = process.env.MYSQL_URL?.trim() || "";
+  const mysqlPublicUrl = process.env.MYSQL_PUBLIC_URL?.trim() || "";
+
+  // `railway run` inherits service variables locally but does not run inside a deployment.
+  // In that case, prefer the public MySQL URL so local development avoids `.railway.internal`.
+  if (!process.env.RAILWAY_DEPLOYMENT_ID) {
+    return mysqlPublicUrl || databaseUrl || mysqlUrl;
+  }
+
+  return databaseUrl || mysqlUrl || mysqlPublicUrl;
+}
 
 let initialized = false;
 
 function getRequiredDatabaseUrl() {
+  const configuredDatabaseUrl = getConfiguredDatabaseUrl();
+
   if (!configuredDatabaseUrl) {
     throw new Error(
-      "DATABASE_URL is required. SQLite fallback has been removed and the API now requires MySQL.",
+      "A MySQL connection URL is required. Use MYSQL_PUBLIC_URL for local development or DATABASE_URL in Railway deployments.",
     );
   }
 

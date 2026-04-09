@@ -17,7 +17,10 @@ npm run dev:web
 npm run dev:api
 ```
 
-后端现在只支持 MySQL，启动 `apps/api` 前需要提供 `DATABASE_URL`。
+后端现在只支持 MySQL。
+
+- Railway 部署环境优先读取 `DATABASE_URL`
+- 本地开发环境优先读取 `MYSQL_PUBLIC_URL`，若未提供则回退到 `DATABASE_URL`
 
 ## 构建
 
