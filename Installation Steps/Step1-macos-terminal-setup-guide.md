@@ -346,11 +346,15 @@ brew install python
 
 ### 3）安装 pnpm
 
+你的环境如果是 Homebrew 安装的新版 Node.js，不要使用 `sudo corepack ...`，否则可能会出现 `corepack: command not found`。
+
+推荐这样安装：
+
 ```bash
-sudo corepack enable
-sudo corepack prepare pnpm@latest --activate
+npm install -g corepack@latest
+corepack enable pnpm
 hash -r
-```
+pnpm -v
 
 ### 4）检查版本
 
