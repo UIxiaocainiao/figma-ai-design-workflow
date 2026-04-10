@@ -39,7 +39,7 @@ https://hyper.is/
 
 下载完成后，把 Hyper 拖到 Applications 里，打开运行一次。
 
-### 2）Hyper 配置文件位置
+### 2）Hyper 配置文件位置(可以不设置)
 
 macOS 下推荐使用这个配置文件：
 
@@ -49,7 +49,7 @@ macOS 下推荐使用这个配置文件：
 
 如果旧版本存在 `~/.hyper.js`，优先以应用目录里的配置为准。
 
-### 3）修改 Hyper 快捷键（Command 风格）
+### 3）修改 Hyper 快捷键（Command 风格、可以不设置）
 
 说明：
 - 这里改的是 **Hyper 自己的快捷键**
@@ -97,7 +97,7 @@ keymaps: {
 
 ## 三、安装基础环境：Xcode 命令行工具 + Homebrew
 
-### 1）安装 Xcode Command Line Tools
+### 1）安装 Xcode Command Line Tools（可以不安装）
 
 ```bash
 xcode-select --install
@@ -105,7 +105,7 @@ xcode-select --install
 
 如果系统提示已经安装，可以跳过。
 
-### 2）安装 Homebrew
+### 2）安装 Homebrew（需科学上网）
 
 直接复制执行：
 
@@ -161,7 +161,7 @@ eza --version
 bat --version
 fd --version
 rg --version
-fzf --version
+fzf --version （可以后续安装）
 zoxide --version
 ```
 
@@ -226,7 +226,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 source ~/.zshrc
 ```
 
-### 3）启动向导
+### 3）启动向导（主要是样式DIY）
 
 ```bash
 p10k configure
@@ -242,6 +242,7 @@ p10k configure
 
 - `zsh-autosuggestions`：命令自动建议
 - `zsh-syntax-highlighting`：命令语法高亮
+- `fzf`：命令行里的模糊搜索工具
 
 ### 1）安装自动建议插件
 
@@ -261,7 +262,14 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 cd ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && git pull
 ```
 
-### 3）启用插件
+### 3）安装命令行里的模糊搜索工具
+
+```bash
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+```
+
+### 4）启用插件
 
 编辑 `~/.zshrc`：
 
@@ -275,10 +283,19 @@ nano ~/.zshrc
 plugins=(
   git
   extract
-  fzf
   zsh-autosuggestions
+  fzf
   zsh-syntax-highlighting
 )
+```
+
+下面些复制到新修改的 `plugins=(...)` 下面：
+
+```bash
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"  
+ZSH_AUTOSUGGEST_STRATEGY="completion" 
+source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.fzf.zsh
 ```
 
 注意：
@@ -355,6 +372,8 @@ npm install -g corepack@latest
 corepack enable pnpm
 hash -r
 pnpm -v
+```
+
 
 ### 4）检查版本
 
@@ -372,67 +391,7 @@ which python3
 
 ---
 
-## 十、安装 Node.js + Python（进阶版：asdf 多版本管理，可选）
 
-如果你以后需要：
-- 不同项目用不同 Node 版本
-- 不同项目用不同 Python 版本
-
-就推荐用 `asdf`。
-
-### 1）安装 asdf
-
-```bash
-brew install asdf
-```
-
-### 2）把 asdf 加到 `~/.zshrc`
-
-追加：
-
-```bash
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
-```
-
-然后执行：
-
-```bash
-source ~/.zshrc
-asdf --version
-```
-
-### 3）安装 Node 插件和 Python 插件
-
-```bash
-asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-asdf plugin add python https://github.com/asdf-community/asdf-python.git
-```
-
-### 4）安装版本
-
-```bash
-asdf install nodejs latest
-asdf set -u nodejs latest
-
-asdf install python latest
-asdf set -u python latest
-```
-
-### 5）刷新并检查
-
-```bash
-asdf reshim nodejs
-asdf reshim python
-asdf current
-which node
-which python3
-```
-
-新手建议：
-- **先用 Homebrew 直接装**
-- 以后真有多版本需求，再切到 asdf
-
----
 
 ## 十一、可选：一键安装 Git 并连接 SSH
 
@@ -478,7 +437,7 @@ eval "$(ssh-agent -s)"
 ssh-add --apple-use-keychain ~/.ssh/id_ed25519
 ```
 
-### 5）查看公钥
+### 5）查看公钥（把公钥复制到github的setting页）
 
 ```bash
 cat ~/.ssh/id_ed25519.pub
