@@ -292,8 +292,8 @@ plugins=(
 下面些复制到新修改的 `plugins=(...)` 下面：
 
 ```bash
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"  
-ZSH_AUTOSUGGEST_STRATEGY="completion" 
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=244"  
+ZSH_AUTOSUGGEST_STRATEGY="history completion" 
 source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source ~/.fzf.zsh
 ```
